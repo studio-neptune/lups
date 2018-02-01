@@ -1,4 +1,4 @@
-LINE Unoffical Push Message Service
+LINE Unofficial Push Message Service
 ==================
 ![ICON](https://raw.githubusercontent.com/star-inc/lups/master/main.ico)
 

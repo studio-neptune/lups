@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-    LINE Unoffical PushMessage Service
+    LINE Unofficial PushMessage Service
     =======================================
         To send a message with one key.
     :version 2018.01.14 using [OLSB-SuperLineApi LiteCore]
@@ -142,7 +142,7 @@ def CleanMSG():
 def main():
     CleanMSG()
     check = True
-    print("LINE Unoffical廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.01.14_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
+    print("LINE Unofficial廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.01.14_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
     print("請輸入您的帳號及密碼：")
     while check:
         email = input("Email: ")
