@@ -20,12 +20,12 @@ HttpHeaders = {}
 email_check = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 # The Codes was removed to protect the system of LINE Corp.
-LINE_HOST_DOMAIN            = '' #
-LINE_LOGIN_QUERY_PATH       = '' #
-LINE_AUTH_QUERY_PATH        = '' #
-LINE_API_QUERY_PATH_FIR     = '' #
-LINE_CERTIFICATE_PATH       = '' #
-### You still can find these pathes from other source ;) ###
+LINE_HOST            = 'https://gd2.line.naver.jp' #
+LINE_LOGIN       = '/api/v4p/rs' #
+LINE_AUTH        = '/api/v4/TalkService.do' #
+LINE_COMMAND     = '/S4' #
+LINE_CERTIFICATE       = '/Q' #
+### You still can find these paths from other source ;) ###
 
 APP_TYPE    = ApplicationType._VALUES_TO_NAMES[96]
 APP_VER     = '5.5.1.1587'
@@ -61,7 +61,7 @@ def login(loginid, passwd, setcrt=None, systemName=None, appName=None, keepLogge
     if appName is None:
         appName='%s\t%s\t%s\t%s' % (APP_TYPE, APP_VER, systemName, SYSTEM_VER)
     HttpHeaders['X-Line-Application'] = appName
-    _client = LineShake(core.TalkService, LINE_HOST_DOMAIN+LINE_AUTH_QUERY_PATH, HttpHeaders)
+    _client = LineShake(core.TalkService, LINE_HOST+LINE_AUTH, HttpHeaders)
     rsaKey = _client.getRSAKeyInfo(provider)
     message = (chr(len(rsaKey.sessionKey)) + rsaKey.sessionKey +
                 chr(len(loginid)) + loginid +
@@ -77,7 +77,7 @@ def login(loginid, passwd, setcrt=None, systemName=None, appName=None, keepLogge
             if os.path.exists(setcrt):
                 with open(setcrt, 'r') as crtfile:
                     certificate = crtfile.read()
-    _client = LineShake(core.TalkService, LINE_HOST_DOMAIN + LINE_LOGIN_QUERY_PATH, HttpHeaders)
+    _client = LineShake(core.TalkService, LINE_HOST + LINE_LOGIN, HttpHeaders)
     LoginReq = loginRequest()
     LoginReq.type = 0
     LoginReq.identityProvider = provider
@@ -92,8 +92,8 @@ def login(loginid, passwd, setcrt=None, systemName=None, appName=None, keepLogge
     if result.type == LoginResultType.REQUIRE_DEVICE_CONFIRM:
         print("請於智慧型手機的LINE輸入認證碼：%s" % (result.pinCode,))
         HttpHeaders['X-Line-Access'] = result.verifier
-        getAccessKey = get_json(LINE_HOST_DOMAIN+LINE_CERTIFICATE_PATH, HttpHeaders)
-        _client = LineShake(core.TalkService, LINE_HOST_DOMAIN + LINE_LOGIN_QUERY_PATH, HttpHeaders)
+        getAccessKey = get_json(LINE_HOST+LINE_CERTIFICATE, HttpHeaders)
+        _client = LineShake(core.TalkService, LINE_HOST + LINE_LOGIN, HttpHeaders)
         try:
             LoginReq = loginRequest()
             LoginReq.type = 1
@@ -126,7 +126,7 @@ def tokenLogin(authToken=None, appName=None):
         'X-Line-Application': appName,
         'X-Line-Access': authToken
     }
-    return LineShake(core.TalkService, LINE_HOST_DOMAIN + LINE_API_QUERY_PATH_FIR, HttpHeaders)
+    return LineShake(core.TalkService, LINE_HOST + LINE_COMMAND, HttpHeaders)
 
 def sendText(self, ToID, msg):
     if ToID:
@@ -142,7 +142,7 @@ def CleanMSG():
 def main():
     CleanMSG()
     check = True
-    print("LINE Unofficial廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.01.14_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
+    print("LINE Unofficial廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.02.03_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
     print("請輸入您的帳號及密碼：")
     while check:
         email = input("Email: ")
@@ -215,6 +215,7 @@ def main():
         for contact in checked_cons:
             if contact.mid != Profile.mid and contact.mid not in ContactIds and "u" == contact.mid[0]:
                 client.findAndAddContactsByMid(Seq, contact.mid)
+                time.sleep(3)
         print("執行完成!")
         return True
     elif action == 3:
