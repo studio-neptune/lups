@@ -20,11 +20,11 @@ HttpHeaders = {}
 email_check = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 # The Codes was removed to protect the system of LINE Corp.
-LINE_HOST        = 'https://gd2.line.naver.jp' #
-LINE_LOGIN       = '/api/v4p/rs' #
-LINE_AUTH        = '/api/v4/TalkService.do' #
-LINE_COMMAND     = '/S4' #
-LINE_CERTIFICATE = '/Q' #
+LINE_HOST        = '' #
+LINE_LOGIN       = '' #
+LINE_AUTH        = '' #
+LINE_COMMAND     = '' #
+LINE_CERTIFICATE = '' #
 ### You still can find these paths from other source ;) ###
 
 APP_TYPE    = ApplicationType._VALUES_TO_NAMES[96]
