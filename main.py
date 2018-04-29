@@ -4,7 +4,7 @@
     LINE Unofficial PushMessage Service
     =======================================
         To send a message with one key.
-    :version 2018.01.14 using [OLSB-SuperLineApi LiteCore]
+    :version 2018.04.26 using [OLSB-SuperLineApi LiteCore]
     :copyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.
 """
 
@@ -20,11 +20,11 @@ HttpHeaders = {}
 email_check = re.compile(r"[^@]+@[^@]+\.[^@]+")
 
 # The Codes was removed to protect the system of LINE Corp.
-LINE_HOST        = '' #
-LINE_LOGIN       = '' #
-LINE_AUTH        = '' #
-LINE_COMMAND     = '' #
-LINE_CERTIFICATE = '' #
+LINE_HOST        = 'https://gd2.line.naver.jp' #
+LINE_LOGIN       = '/api/v4p/rs' #
+LINE_AUTH        = '/api/v4/TalkService.do' #
+LINE_COMMAND     = '/S4' #
+LINE_CERTIFICATE = '/Q' #
 ### You still can find these paths from other source ;) ###
 
 APP_TYPE    = ApplicationType._VALUES_TO_NAMES[96]
@@ -142,7 +142,7 @@ def CleanMSG():
 def main():
     CleanMSG()
     check = True
-    print("LINE Unofficial廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.02.03_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
+    print("LINE Unofficial廣播系統\n=======================================\n\t一鍵發送訊息到所有好友\n\nVersion 2018.04.26_zh-TW Free Edition\nCopyright 2018 Star Inc.(https://starinc.xyz) All Rights Reserved.\n\n")
     print("請輸入您的帳號及密碼：")
     while check:
         email = input("Email: ")
@@ -161,21 +161,30 @@ def main():
     CleanMSG()
     Profile = client.getProfile()
     print("歡迎%s使用本服務^^" % (Profile.displayName,))
-    ContactIds = client.getAllContactIds()
-    print("\n\n請輸入您需要的服務...\n(1:廣播文字訊息 2:利用用戶識別碼加入好友 3:從群組取得所有人的識別碼  其他代碼為退出)")
+    print("\n\n請輸入您需要的服務...\n(1:透過識別碼廣播文字訊息 2:從群組取得所有成員的識別碼  其他代碼為退出)")
     try:
         action = input("服務代碼：")
         action = int(action)
     except:
         action = 0
-    if action == 1:
+    if action == 1: 
+        ContactIds = []
+        mids = input("識別碼資料(JSON格式)：")
+        try:
+            mids = json.loads(mids)
+        except:
+            raise Exception("JSON Decode Error!")
+        checked_cons = client.getContacts(mids)
+        for contact in checked_cons:
+            if contact.mid != Profile.mid and contact.mid not in ContactIds and "u" == contact.mid[0]:
+                ContactIds.append(contact.mid)
         CleanMSG()
         actionCheck = True
         retry = False
         while actionCheck:
             if retry:
                 print("警告！您尚未輸入任何訊息，請重新輸入...")
-            print("請輸入您要輸入的訊息...(輸入完成後請輸入 Ctrl + C )")
+            print("請輸入您要輸入的訊息...(輸入完成後，請先換行再輸入 Ctrl + C )")
             print("請注意，每次換行後便無法刪除！\n===============================\n")
             str_saver = ""
             check = True
@@ -206,19 +215,6 @@ def main():
             else:
                 return True
     elif action == 2:
-        mids = input("識別碼資料(JSON格式)：")
-        try:
-            mids = json.loads(mids)
-        except:
-            raise Exception("JSON Decode Error!")
-        checked_cons = client.getContacts(mids)
-        for contact in checked_cons:
-            if contact.mid != Profile.mid and contact.mid not in ContactIds and "u" == contact.mid[0]:
-                client.findAndAddContactsByMid(Seq, contact.mid)
-                time.sleep(3)
-        print("執行完成!")
-        return True
-    elif action == 3:
         Count = 0
         GroupIds = client.getGroupIdsJoined()
         Groups = client.getGroups(GroupIds)
