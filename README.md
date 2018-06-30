@@ -14,6 +14,7 @@ But you still can find these from Internet.
     rsa >= 3.4.2
     requests >= 2.18.4
     six >= 1.11.0
+    thrift >= 0.11.0
 
 # Usage:
     python main.py
